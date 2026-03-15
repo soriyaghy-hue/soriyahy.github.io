@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>which one are you? ✨ a coquette quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--pink-light:#FBEAF0;--pink-mid:#F4C0D1;--pink-main:#D4537E;--pink-dark:#72243E;--pink-deep:#4B1528;--cream:#FDF7F4;--text:#2C1A22;--text-muted:#9A7080;--border:rgba(212,83,126,0.18);--white:#FFFFFF;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 10% 10%,rgba(244,192,209,0.35) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 90% 85%,rgba(212,83,126,0.12) 0%,transparent 55%),radial-gradient(ellipse 40% 30% at 60% 20%,rgba(251,234,240,0.5) 0%,transparent 50%);pointer-events:none;z-index:0}
+.bows-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bow{position:absolute;opacity:0.07;animation:floatBow 12s ease-in-out infinite}
+@keyframes floatBow{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(8deg)}}
+.page{position:relative;z-index:1}
+header{text-align:center;padding:3.5rem 1rem 1.5rem;animation:fadeDown 0.8s ease both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.header-tag{display:inline-block;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--pink-main);background:var(--pink-light);border:1px solid var(--pink-mid);border-radius:99px;padding:4px 14px;margin-bottom:1rem}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3.2rem);font-weight:400;color:var(--text);line-height:1.2;margin-bottom:0.5rem}
+header h1 em{color:var(--pink-main);font-style:italic}
+header p{font-size:15px;color:var(--text-muted);font-weight:300}
+.divider{display:flex;align-items:center;gap:12px;max-width:300px;margin:1.5rem auto}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--pink-mid)}
+.divider span{font-size:14px;color:var(--pink-main)}
+.container{max-width:680px;margin:0 auto;padding:0 1.25rem 5rem}
+.screen{display:none;animation:fadeUp 0.5s ease both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.quiz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.quiz-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:1.5rem 1.25rem;cursor:pointer;display:flex;align-items:center;gap:1rem;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s}
+.quiz-card:hover{border-color:var(--pink-main);transform:translateY(-3px);box-shadow:0 8px 32px rgba(212,83,126,0.12)}
+.card-icon{width:52px;height:52px;border-radius:14px;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card-info{flex:1}
+.card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.card-desc{font-size:12px;color:var(--text-muted);font-weight:300}
+.card-arrow{color:var(--pink-mid);font-size:18px;transition:color 0.2s,transform 0.2s}
+.quiz-card:hover .card-arrow{color:var(--pink-main);transform:translateX(4px)}
+.quiz-panel{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2rem 1.75rem}
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.back-btn{background:none;border:none;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;transition:color 0.15s}
+.back-btn:hover{color:var(--pink-main)}
+.q-counter{font-size:12px;color:var(--text-muted);font-weight:300}
+.progress-bar{height:4px;background:var(--pink-light);border-radius:99px;margin-bottom:2rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--pink-mid),var(--pink-main));border-radius:99px;transition:width 0.4s cubic-bezier(0.4,0,0.2,1)}
+.q-text{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,3vw,1.4rem);font-weight:400;color:var(--text);margin-bottom:1.5rem;line-height:1.45}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt-btn{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:0.85rem 1.1rem;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);cursor:pointer;text-align:left;font-weight:300;transition:border-color 0.15s,background 0.15s,transform 0.15s;line-height:1.4}
+.opt-btn:hover{border-color:var(--pink-main);background:var(--pink-light);transform:translateX(4px)}
+.result-panel{background:var(--white);border:1px solid var(--border);border-radius:24px;overflow:hidden}
+.result-hero{background:linear-gradient(135deg,var(--pink-light) 0%,#FDF0F5 100%);padding:2.5rem 2rem 2rem;text-align:center;border-bottom:1px solid var(--border)}
+.result-hero-emoji{font-size:56px;margin-bottom:12px;display:block}
+.result-hero h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,5vw,2rem);font-weight:400;color:var(--pink-deep);margin-bottom:8px}
+.result-hero p{font-size:14px;color:var(--pink-dark);font-weight:300;max-width:380px;margin:0 auto;line-height:1.65}
+.result-body{padding:1.5rem 2rem 2rem}
+.traits-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.traits{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem}
+.trait{background:var(--pink-light);color:var(--pink-dark);font-size:12px;font-weight:400;padding:5px 14px;border-radius:99px;border:1px solid var(--pink-mid)}
+.result-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-pink{background:var(--pink-main);color:white;border:none;border-radius:12px;padding:0.65rem 1.4rem;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:background 0.15s,transform 0.15s}
+.btn-pink:hover{background:var(--pink-dark);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:12px;padding:0.65rem 1.4rem;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:400;cursor:pointer;transition:border-color 0.15s,color 0.15s}
+.btn-outline:hover{border-color:var(--pink-main);color:var(--pink-main)}
+footer{text-align:center;padding:2rem 1rem;font-size:12px;color:var(--pink-mid);position:relative;z-index:1}
+@media(max-width:480px){.quiz-panel{padding:1.5rem 1.25rem}.result-hero{padding:2rem 1.25rem 1.5rem}.result-body{padding:1.25rem 1.25rem 1.5rem}}
+</style>
+</head>
+<body>
+<div class="bows-bg" id="bows-bg"></div>
+<div class="page">
+  <header>
+    <div class="header-tag">personality quiz ✨</div>
+    <h1>which one<br>are <em>you?</em></h1>
+    <p>10 questions · 4 quizzes · discover your vibe</p>
+    <div class="divider"><span>🎀</span></div>
+  </header>
+  <div class="container">
+    <div id="home" class="screen active"><div class="quiz-grid" id="quiz-grid"></div></div>
+    <div id="quiz" class="screen">
+      <div class="quiz-panel">
+        <div class="quiz-top">
+          <button class="back-btn" onclick="goHome()">← back</button>
+          <span class="q-counter" id="q-counter"></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+        <p class="q-text" id="q-text"></p>
+        <div class="options" id="options"></div>
+      </div>
+    </div>
+    <div id="result" class="screen">
+      <div class="result-panel">
+        <div class="result-hero">
+          <span class="result-hero-emoji" id="r-emoji"></span>
+          <h2 id="r-title"></h2>
+          <p id="r-desc"></p>
+        </div>
+        <div class="result-body">
+          <p class="traits-label">your traits</p>
+          <div class="traits" id="r-traits"></div>
+          <div class="result-actions">
+            <button class="btn-pink" onclick="retakeQuiz()">retake quiz</button>
+            <button class="btn-outline" onclick="goHome()">try another quiz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>made with 🎀 · a coquette quiz</footer>
+</div>
+<script>
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const QUIZZES=[
+{id:"jellycat",emoji:"🧸",title:"which jellycat are you?",desc:"14 real jellycats — find your plushie twin",
+questions:[
+{text:"your friends would describe you as...",opts:[["the warmest, most comforting one","cozy"],["chaotic and unpredictable but so fun","bold"],["dreamy and always in your own world","dreamy"],["quirky — nobody else quite like you","quirky"]]},
+{text:"pick a saturday morning...",opts:[["still in bed wrapped in blankets at noon","cozy"],["baking something yummy for everyone","nurture"],["out exploring somewhere new","adventurous"],["floating around with zero plans","dreamy"]]},
+{text:"your bedroom vibe is...",opts:[["soft pink, bows, fairy lights","sweet"],["cottagecore — mushrooms, dried flowers, linen","quirky"],["bold and colourful, maximalist","bold"],["minimal and clean with one statement piece","elegant"]]},
+{text:"your monday energy is...",opts:[["barely functioning, send snacks","cozy"],["chaotically optimistic for no reason","bold"],["calm and unbothered as always","elegant"],["already three steps ahead somehow","adventurous"]]},
+{text:"your go-to comfort is...",opts:[["a big warm hug","cozy"],["cooking something from scratch","nurture"],["a long walk somewhere pretty","adventurous"],["lying on the floor staring at the ceiling","dreamy"]]},
+{text:"your love language is...",opts:[["physical touch — hugs always","cozy"],["acts of service — doing everything for people","nurture"],["words of affirmation — hyping everyone up","sweet"],["quality time — full presence, no phones","elegant"]]},
+{text:"your superpower is...",opts:[["making people feel instantly at home","cozy"],["being genuinely funny without trying","bold"],["having impeccable taste in everything","elegant"],["noticing tiny details nobody else catches","dreamy"]]},
+{text:"your dream pet is...",opts:[["a fluffy bunny who loves cuddles","sweet"],["a chaotic cat with big personality","bold"],["a wise old dog who goes everywhere with you","elegant"],["something unusual — a hedgehog or a crow","quirky"]]},
+{text:"pick a day out...",opts:[["farmers market then a cozy café","nurture"],["hiking or exploring a new city","adventurous"],["a gallery or bookshop browse","elegant"],["a golden picnic somewhere pretty","sweet"]]},
+{text:"how do people feel around you?",opts:[["safe, warm, completely at ease","cozy"],["energised — like anything could happen","bold"],["seen and genuinely understood","dreamy"],["inspired to be softer and kinder","sweet"]]},
+],
+resultMap:{cozy:["Bashful Bunny","Bartholomew Bear","Smudge Sheep"],bold:["Neon Kooky Cat","Fleury Dragon","Cordy Roy Fox"],dreamy:["Amuseable Cloud","Odell Jellyfish","Hare"],quirky:["Amuseable Mushroom","Amuseable Avocado","Lulu Guinea Pig"],sweet:["Amuseable Strawberry","Amuseable Donut","Pitterpat Bunny"],nurture:["Amuseable Croissant","Fuddlewuddle Elephant","Amuseable Hot Chocolate"],adventurous:["Happy Horse","Odell Octopus","Zig & Zag Zebra"],elegant:["Silvia Bunny","Truffle Bunny","Peanut Elephant"]},
+results:{
+"Bashful Bunny":{emoji:"🐰",desc:"the og comfort friend. soft, loyal, and everyone's safe place. you give the best hugs and people feel instantly better just being near you.",traits:["gentle","loyal","cuddly","soft-hearted"]},
+"Bartholomew Bear":{emoji:"🐻",desc:"dependable, warm, and quietly wise. the bear everyone wants in their corner — steady, kind, and a classic for a reason.",traits:["dependable","wise","warm","steady"]},
+"Smudge Sheep":{emoji:"🐑",desc:"fluffy, easygoing, and endlessly sweet. your gentle presence makes everyone around you feel calm and completely safe.",traits:["fluffy","easygoing","calming","sweet"]},
+"Neon Kooky Cat":{emoji:"🐱",desc:"chaotic, unpredictable, and iconic. you are the wildcard — always the most memorable person in any room. never boring, ever.",traits:["chaotic","iconic","unpredictable","electric"]},
+"Fleury Dragon":{emoji:"🐉",desc:"fierce but totally lovable. big main character energy — dramatic, passionate, and magnetic. people either can't handle you or absolutely adore you.",traits:["fierce","dramatic","passionate","lovable"]},
+"Cordy Roy Fox":{emoji:"🦊",desc:"clever, charming, and a little sly. the smart one who's somehow also the funniest. your mischievous streak makes you completely irresistible.",traits:["clever","charming","mischievous","sharp"]},
+"Amuseable Cloud":{emoji:"☁️",desc:"floaty, soft, and surprisingly deep. you drift through life with a dreamy smile and make the world feel lighter just by existing.",traits:["dreamy","floaty","soft","ethereal"]},
+"Odell Jellyfish":{emoji:"🪼",desc:"ethereal and a little untouchable. you float on your own wavelength — beautiful, mysterious, and completely one of a kind.",traits:["ethereal","mysterious","unique","drifting"]},
+"Hare":{emoji:"🐇",desc:"thoughtful, quick-witted, and a little introspective. you notice everything and say exactly the right thing at exactly the right time.",traits:["thoughtful","witty","observant","wise"]},
+"Amuseable Mushroom":{emoji:"🍄",desc:"cottagecore through and through. earthy, whimsical, and a little mysterious — you would definitely live in a forest cottage given the chance.",traits:["earthy","whimsical","mysterious","cozy"]},
+"Amuseable Avocado":{emoji:"🥑",desc:"cool, unique, and a little quirky. you have the best takes and a personality that's somehow both trendy and completely timeless.",traits:["quirky","cool","unique","fun"]},
+"Lulu Guinea Pig":{emoji:"🐹",desc:"tiny but full of personality. constantly underestimated and constantly proving everyone wrong. a pocket-sized powerhouse.",traits:["feisty","lovable","surprising","powerful"]},
+"Amuseable Strawberry":{emoji:"🍓",desc:"sweet, bright, and a total delight. small but mighty and impossible not to adore — everyone's favourite without even trying.",traits:["sweet","bright","bubbly","beloved"]},
+"Amuseable Donut":{emoji:"🍩",desc:"fun, colourful, and universally loved. you are the treat everyone deserves — impossible to be sad around and always a good time.",traits:["fun","colourful","joyful","universally loved"]},
+"Pitterpat Bunny":{emoji:"🐰",desc:"bubbly, fast-moving, and full of infectious energy. you're always onto the next thing and bring excitement to everything you touch.",traits:["energetic","bubbly","excited","bouncy"]},
+"Amuseable Croissant":{emoji:"🥐",desc:"warm, buttery, and irresistible. the friend who always shows up with snacks and makes everything feel golden and cozy.",traits:["nurturing","warm","golden","delightful"]},
+"Fuddlewuddle Elephant":{emoji:"🐘",desc:"wise beyond your years and incredibly nurturing. you remember everything, forgive easily, and love bigger than anyone you know.",traits:["wise","nurturing","devoted","forgiving"]},
+"Amuseable Hot Chocolate":{emoji:"☕",desc:"the ultimate comfort. people call you when they need to feel better — warm, healing, sweet, and completely irreplaceable.",traits:["cozy","healing","warm","comforting"]},
+"Happy Horse":{emoji:"🐴",desc:"free-spirited and always moving. you can't be fenced in — you need new experiences, open spaces, and the wind in your hair.",traits:["free","adventurous","spirited","energetic"]},
+"Odell Octopus":{emoji:"🐙",desc:"multi-talented and always juggling everything. somehow doing it all beautifully at once. a true icon who can handle anything.",traits:["capable","multi-talented","iconic","resourceful"]},
+"Zig & Zag Zebra":{emoji:"🦓",desc:"bold, striped, and always standing out. you never wanted to blend in. your distinctiveness is genuinely your greatest superpower.",traits:["bold","distinctive","confident","striking"]},
+"Silvia Bunny":{emoji:"🐇",desc:"elegant and completely understated. you carry yourself with quiet grace and don't need to shout to be noticed — your presence speaks for itself.",traits:["elegant","graceful","poised","refined"]},
+"Truffle Bunny":{emoji:"🐰",desc:"luxurious and a little indulgent. you have exquisite taste and appreciate the finer things — soft blankets, good candles, and only the best.",traits:["luxurious","tasteful","indulgent","refined"]},
+"Peanut Elephant":{emoji:"🐘",desc:"small, round, and absolutely precious. the tiniest source of the biggest joy — people feel genuinely lucky just to know you.",traits:["precious","joyful","cherished","pure"]},
+}},
+{id:"aesthetic",emoji:"🌸",title:"which aesthetic are you?",desc:"coquette, dark academia, y2k, or cottagecore?",
+questions:[
+{text:"your ideal saturday looks like...",opts:[["reading in a library with rain outside","dark academia"],["afternoon picnic with pink lemonade","coquette"],["thrifting and going to a diner","y2k"],["forest walk with a wildflower basket","cottagecore"]]},
+{text:"your bedroom vibe is...",opts:[["warm books, candles, old maps","dark academia"],["pink pillows, bows, fairy lights","coquette"],["funky posters, chrome, nostalgia","y2k"],["dried flowers, linen, pressed leaves","cottagecore"]]},
+{text:"your go-to outfit is...",opts:[["blazer, loafers, plaid","dark academia"],["mini dress with a ribbon in your hair","coquette"],["low-rise jeans, crop top, platform boots","y2k"],["flowy floral dress and clogs","cottagecore"]]},
+{text:"your playlist title would be...",opts:[["for studying in the rain","dark academia"],["soft girl summer","coquette"],["2006 forever","y2k"],["bloom and wander","cottagecore"]]},
+{text:"your dream vacation is...",opts:[["edinburgh, scotland","dark academia"],["paris in the spring","coquette"],["miami circa 2003","y2k"],["the english countryside","cottagecore"]]},
+{text:"your favourite scent is...",opts:[["old books and tobacco","dark academia"],["roses and warm vanilla","coquette"],["bubblegum and cherry","y2k"],["lavender and fresh earth","cottagecore"]]},
+{text:"your go-to drink is...",opts:[["black coffee or earl grey","dark academia"],["strawberry matcha latte","coquette"],["a fruity energy drink","y2k"],["chamomile tea with honey","cottagecore"]]},
+{text:"your ideal pet is...",opts:[["a mysterious black cat","dark academia"],["a fluffy white cat with a bow","coquette"],["a tiny chihuahua in an outfit","y2k"],["a bunny named clover","cottagecore"]]},
+{text:"you spend sundays...",opts:[["journaling or sketching by candlelight","dark academia"],["skincare and watching a romance film","coquette"],["video chatting friends and online shopping","y2k"],["baking bread or tending to plants","cottagecore"]]},
+{text:"your life motto is...",opts:[["knowledge is power and beauty","dark academia"],["soft life only","coquette"],["stay iconic","y2k"],["slow down and bloom","cottagecore"]]},
+],
+results:{
+"dark academia":{emoji:"📚",desc:"intellectual, romantic about learning, and drawn to candlelight and leather. mystery is your middle name and you wouldn't have it any other way.",traits:["bookworm","atmospheric","poetic","vintage"]},
+"coquette":{emoji:"🎀",desc:"soft, feminine, and effortlessly charming. you see beauty in pink sunsets, satin ribbons, and the little luxuries of everyday life.",traits:["soft","feminine","dreamy","luxurious"]},
+"y2k":{emoji:"💿",desc:"bold, playful, and ahead of the curve. you bring early 2000s nostalgia with a modern twist and you make it look effortless.",traits:["fun","nostalgic","iconic","bold"]},
+"cottagecore":{emoji:"🌿",desc:"grounded, gentle, and close to nature. you find magic in wildflowers, homemade jam, and a good thunderstorm from inside a cozy kitchen.",traits:["gentle","nature-loving","cozy","wholesome"]},
+}},
+{id:"softdrink",emoji:"🥤",title:"which soft drink are you?",desc:"strawberry lemonade, matcha, sparkling water...?",
+questions:[
+{text:"your morning routine is...",opts:[["slow and peaceful — skincare, journaling, tea","matcha latte"],["quick and chaotic — grabbed something on the way","diet coke"],["bright and energetic — you're a morning person","strawberry lemonade"],["minimal — just water and go","sparkling water"]]},
+{text:"your texting style is...",opts:[["long paragraphs full of feelings","strawberry lemonade"],["lowercase everything, no punctuation","diet coke"],["very considered, never leaves you on read","matcha latte"],["delayed replies but always worth the wait","sparkling water"]]},
+{text:"your ideal friday night is...",opts:[["out dancing or at a rooftop somewhere fun","diet coke"],["cozy night in with candles and a film","matcha latte"],["picnic or dinner somewhere aesthetic","strawberry lemonade"],["doing exactly what you feel like with no plans","sparkling water"]]},
+{text:"pick a colour palette...",opts:[["pink, red, cherry — bold and sweet","cherry cola"],["matcha green, cream, gold — soft and earthy","matcha latte"],["clear, silver, white — clean and minimal","sparkling water"],["peach, blush, coral — bright and warm","strawberry lemonade"]]},
+{text:"your fashion vibe is...",opts:[["soft and feminine with little bows","strawberry lemonade"],["effortlessly cool, a little understated","sparkling water"],["trendy and a bit unexpected","diet coke"],["cozy luxe — quiet and tasteful","matcha latte"]]},
+{text:"your energy in a group is...",opts:[["the life of the party — everyone knows you","cherry cola"],["the warm one who remembers everyone's name","strawberry lemonade"],["the calm presence everyone gravitates toward","matcha latte"],["the mysterious one who says little but lands perfectly","sparkling water"]]},
+{text:"pick a playlist mood...",opts:[["upbeat bops, dancing in the kitchen","cherry cola"],["soft indie, window seat, golden hour","strawberry lemonade"],["ambient, lo-fi, rain sounds","matcha latte"],["clean girl playlist, no skip","sparkling water"]]},
+{text:"your ideal café order...",opts:[["iced strawberry lemonade obviously","strawberry lemonade"],["iced matcha with oat milk","matcha latte"],["just sparkling water with a lemon slice","sparkling water"],["diet coke from the fountain, in a cup","diet coke"]]},
+{text:"your biggest flex is...",opts:[["your ability to make any room more fun","cherry cola"],["how good your skin looks","sparkling water"],["your taste — in music, places, people","matcha latte"],["how loved you make everyone feel","strawberry lemonade"]]},
+{text:"people describe your vibe as...",opts:[["sweet and irresistible","strawberry lemonade"],["effortlessly cool","sparkling water"],["bold and addictive","diet coke"],["calm, earthy, and grounding","matcha latte"]]},
+],
+results:{
+"strawberry lemonade":{emoji:"🍓",desc:"sweet, bright, and instantly lovable. you walk in and the whole room gets better. warm, generous, and absolutely irresistible — everyone wants to be around you.",traits:["sweet","warm","bright","irresistible"]},
+"matcha latte":{emoji:"🍵",desc:"calm, intentional, and quietly magnetic. you have incredible taste and a grounding energy that people are drawn to without even knowing why.",traits:["calm","tasteful","grounding","earthy"]},
+"sparkling water":{emoji:"💧",desc:"clean, crisp, and effortlessly cool. you don't need to be loud to be noticed — your presence is subtle but completely unforgettable. the it girl of beverages.",traits:["cool","minimal","effortless","chic"]},
+"diet coke":{emoji:"🥤",desc:"bold, iconic, and genuinely a little addictive. you have massive main character energy and people can't get enough of you. a classic with an edge.",traits:["bold","iconic","addictive","electric"]},
+"cherry cola":{emoji:"🍒",desc:"sweet with a dark side. you're the most fun person in any room — bubbly on the surface with a deep rich personality underneath that surprises everyone.",traits:["fun","bold","surprising","magnetic"]},
+}},
+{id:"dessert",emoji:"🍰",title:"which dessert are you?",desc:"macaron, tiramisu, strawberry cake, or lava cake?",
+questions:[
+{text:"your mood on a monday is...",opts:[["delicate and a bit fragile","Macaron"],["bitter-sweet, needs warming up","Tiramisu"],["fresh and sweet right away","Strawberry Cake"],["rich and indulgent from the start","Chocolate Lava Cake"]]},
+{text:"your friends say you're...",opts:[["cute and comes in many moods","Macaron"],["complex and intriguing","Tiramisu"],["bright and instantly cheerful","Strawberry Cake"],["intense and completely unforgettable","Chocolate Lava Cake"]]},
+{text:"your ideal date is...",opts:[["a patisserie in paris","Macaron"],["a candlelit restaurant in florence","Tiramisu"],["a strawberry patch picnic","Strawberry Cake"],["a fancy rooftop dinner","Chocolate Lava Cake"]]},
+{text:"your go-to café order is...",opts:[["oat latte, pretty please","Macaron"],["double espresso","Tiramisu"],["iced strawberry lemonade","Strawberry Cake"],["dark hot chocolate","Chocolate Lava Cake"]]},
+{text:"your colour palette is...",opts:[["pastel everything","Macaron"],["warm creams and browns","Tiramisu"],["red, pink, white","Strawberry Cake"],["dark burgundy and gold","Chocolate Lava Cake"]]},
+{text:"when stressed you...",opts:[["get avoidant and a little too cute about it","Macaron"],["sit with it and think deeply","Tiramisu"],["vent to your best friend immediately","Strawberry Cake"],["go all in and feel absolutely everything","Chocolate Lava Cake"]]},
+{text:"your superpower is...",opts:[["being impossibly aesthetic","Macaron"],["having incredible emotional depth","Tiramisu"],["making people instantly happy","Strawberry Cake"],["being deeply, intensely passionate","Chocolate Lava Cake"]]},
+{text:"your celebrity doppelganger energy...",opts:[["audrey hepburn — timeless and delicate","Macaron"],["timothée chalamet — mysterious and deep","Tiramisu"],["taylor swift bubbly era — sunny and fun","Strawberry Cake"],["zendaya — iconic and commanding","Chocolate Lava Cake"]]},
+{text:"your weakness is...",opts:[["cracking under pressure","Macaron"],["being misunderstood","Tiramisu"],["being way too nice","Strawberry Cake"],["being too intense for some people","Chocolate Lava Cake"]]},
+{text:"you want to be remembered as...",opts:[["beautiful and whimsical","Macaron"],["deeply, meaningfully good","Tiramisu"],["the sweetest person anyone ever knew","Strawberry Cake"],["someone who made people feel everything","Chocolate Lava Cake"]]},
+],
+results:{
+"Macaron":{emoji:"🌸",desc:"delicate, aesthetic, and endlessly charming. you have an eye for beauty and a gentle sweetness that draws everyone in. also you come in many moods.",traits:["whimsical","aesthetic","soft","charming"]},
+"Tiramisu":{emoji:"☕",desc:"layered, warm, and deeply complex. you get better the more time someone spends with you. a slow burn classic that nobody forgets.",traits:["complex","warm","intellectual","timeless"]},
+"Strawberry Cake":{emoji:"🍓",desc:"bright, fresh, and instantly lovable. you light up any room you walk into and make people feel like everything is going to be okay.",traits:["cheerful","warm","bright","generous"]},
+"Chocolate Lava Cake":{emoji:"🍫",desc:"bold on the outside, completely molten on the inside. you feel everything intensely and leave a lasting impression on everyone lucky enough to know you.",traits:["passionate","intense","unforgettable","deep"]},
+}},
+];
+
+let currentQuiz=null,currentQ=0,scores={};
+function goHome(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('home').classList.add('active');}
+function startQuiz(id){currentQuiz=QUIZZES.find(q=>q.id===id);currentQ=0;scores={};document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');renderQ();}
+function renderQ(){
+  const q=currentQuiz.questions[currentQ];const total=currentQuiz.questions.length;
+  document.getElementById('prog').style.width=((currentQ/total)*100)+'%';
+  document.getElementById('q-counter').textContent=(currentQ+1)+' / '+total;
+  document.getElementById('q-text').textContent=q.text;
+  const opts=document.getElementById('options');opts.innerHTML='';
+  shuffle(q.opts).forEach(([label,key])=>{const b=document.createElement('button');b.className='opt-btn';b.textContent=label;b.onclick=()=>{scores[key]=(scores[key]||0)+1;currentQ++;currentQ<currentQuiz.questions.length?renderQ():showResult();};opts.appendChild(b);});
+}
+function getJellycatResult(){
+  const top=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+  const pool=currentQuiz.resultMap[top]||currentQuiz.resultMap['cozy'];
+  const name=pool[Math.floor(Math.random()*pool.length)];
+  return{name,...currentQuiz.results[name]};
+}
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  let r,name;
+  if(currentQuiz.id==='jellycat'){const res=getJellycatResult();r=res;name=res.name;}
+  else{name=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];r=currentQuiz.results[name];}
+  document.getElementById('r-emoji').textContent=r.emoji;
+  document.getElementById('r-title').textContent=name;
+  document.getElementById('r-desc').textContent=r.desc;
+  document.getElementById('r-traits').innerHTML=r.traits.map(t=>`<span class="trait">${t}</span>`).join('');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('result').classList.add('active');
+}
+function retakeQuiz(){startQuiz(currentQuiz.id);}
+const grid=document.getElementById('quiz-grid');
+QUIZZES.forEach(q=>{const card=document.createElement('div');card.className='quiz-card';card.innerHTML=`<div class="card-icon">${q.emoji}</div><div class="card-info"><div class="card-title">${q.title}</div><div class="card-desc">${q.desc}</div></div><div class="card-arrow">→</div>`;card.onclick=()=>startQuiz(q.id);grid.appendChild(card);});
+const bowsContainer=document.getElementById('bows-bg');
+const bowEmojis=['🎀','🌸','✨','🌷','💕'];
+for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bow';b.textContent=bowEmojis[i%bowEmojis.length];b.style.left=(Math.random()*100)+'%';b.style.top=(Math.random()*100)+'%';b.style.animationDelay=(Math.random()*8)+'s';b.style.animationDuration=(8+Math.random()*8)+'s';b.style.fontSize=(18+Math.random()*24)+'px';bowsContainer.appendChild(b);}
+</script>
+</body>
+</html>
