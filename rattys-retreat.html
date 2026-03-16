@@ -670,11 +670,79 @@ function buildShop(){
 }
 function buyW(id){const item=SHOP_WEARABLES.find(s=>s.id===id);if(!item||S.ownedWearables.includes(id))return;if(S.coins<item.price){showNotif('not enough coins! 🪙');return;}S.coins-=item.price;S.ownedWearables.push(id);updateBars();buildShop();buildDressPanel();saveState();showNotif('got '+item.name+'! ✨');}
 function buyD(id){const item=DECOR_CATALOG.find(d=>d.id===id);if(!item)return;if(S.coins<item.price){showNotif('not enough coins! 🪙 play games!');return;}S.coins-=item.price;S.decorInventory[id]=(S.decorInventory[id]||0)+1;updateBars();buildShop();buildDecorInventory();saveState();showNotif('got '+item.name+'! check Decor tab 🏠');}
-let mgActive=false,mgScore=0,mgMisses=0,mgDrop;
-function startMinigame(){mgActive=true;mgScore=0;mgMisses=0;document.getElementById('mg-area').innerHTML='<div style="display:flex;justify-content:space-between;width:100%;font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:4px;"><span>🪙 +<span id="mg-score">0</span></span><span>misses: <span id="mg-miss">0</span>/5</span></div><div id="cheese-game"></div><div style="font-size:11px;color:var(--text-light);margin-top:6px;">tap the cheese! 🧀</div>';document.getElementById('cheese-game').addEventListener('click',catchCheese);mgDrop=setInterval(()=>{if(!mgActive)return;const g=document.getElementById('cheese-game');if(!g)return;const ch=document.createElement('div');ch.style.cssText='position:absolute;left:'+(10+Math.random()*80)+'%;top:0;font-size:24px;cursor:pointer;transition:top 2.5s linear;user-select:none;';ch.textContent='🧀';g.appendChild(ch);setTimeout(()=>{if(!ch.dataset.caught){ch.remove();mgMisses++;const m=document.getElementById('mg-miss');if(m)m.textContent=mgMisses;if(mgMisses>=5)endMinigame();}},2500);setTimeout(()=>{ch.style.top='130px';},50);},1000);}
-function catchCheese(e){if(e.target.textContent==='🧀'){e.target.dataset.caught='1';e.target.textContent='✨';mgScore+=3;const m=document.getElementById('mg-score');if(m)m.textContent=mgScore;setTimeout(()=>e.target.remove(),300);}}
-function endMinigame(){mgActive=false;clearInterval(mgDrop);S.coins+=mgScore;updateBars();saveState();document.getElementById('mg-area').innerHTML='<div class="mg-title">Game Over! 🎀</div><div class="mg-desc">You earned <strong>🪙 '+mgScore+' coins</strong>!</div><div style="font-size:28px;margin:8px 0">🧀</div><button class="mg-btn" onclick="startMinigame()">Play Again ✨</button><button class="mg-btn" style="background:white;color:var(--pink-dark);border:1.5px solid var(--pink);margin-top:6px;" onclick="resetMg()">Back</button>';showNotif('earned 🪙 '+mgScore+' coins! 💕');}
-function resetMg(){document.getElementById('mg-area').innerHTML='<div class="mg-title">Cheese Catch! 🧀</div><div class="mg-desc">Tap the falling cheese to earn 🪙 coins!</div><div style="font-size:12px;color:var(--text-light);">3 coins per catch • 5 misses ends game</div><button class="mg-btn" onclick="startMinigame()">Play Now ✨</button>';}
+let mgActive=false,mgScore=0,mgMisses=0,mgRaf,mgLastSpawn=0,mgItems=[];
+function startMinigame(){
+  if(mgRaf){cancelAnimationFrame(mgRaf);mgRaf=null;}
+  mgActive=true;mgScore=0;mgMisses=0;mgItems=[];mgLastSpawn=0;
+  document.getElementById('mg-area').innerHTML=`<div style="display:flex;justify-content:space-between;width:100%;font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:4px;"><span>🪙 +<span id="mg-score">0</span></span><span>misses: <span id="mg-miss">0</span>/5</span></div><div id="cheese-game" style="position:relative;width:100%;height:160px;background:linear-gradient(180deg,#fff8f4 80%,#f4e0d0 100%);border-radius:12px;overflow:hidden;cursor:crosshair;border:1px solid var(--border);touch-action:none;"></div><div style="font-size:11px;color:var(--text-light);margin-top:6px;">tap the cheese! 🧀</div>`;
+  document.getElementById('cheese-game').addEventListener('pointerdown',catchCheese);
+  function loop(ts){
+    if(!mgActive)return;
+    const g=document.getElementById('cheese-game');
+    if(!g)return;
+    // spawn
+    if(ts-mgLastSpawn>2000){
+      mgLastSpawn=ts;
+      const item={el:document.createElement('div'),y:-10,speed:0.6+Math.random()*0.4,caught:false,missed:false};
+      item.el.style.cssText=`position:absolute;font-size:26px;user-select:none;touch-action:none;left:${8+Math.random()*76}%;top:-10px;`;
+      item.el.textContent='🧀';
+      g.appendChild(item.el);
+      mgItems.push(item);
+    }
+    // move
+    let newMisses=0;
+    const keep=[];
+    for(let i=0;i<mgItems.length;i++){
+      const item=mgItems[i];
+      if(item.caught)continue; // skip caught ones still animating out
+      item.y+=item.speed;
+      item.el.style.top=item.y+'px';
+      if(item.y>165){
+        if(!item.missed){item.missed=true;newMisses++;}
+        try{item.el.remove();}catch(e){}
+        continue; // don't keep
+      }
+      keep.push(item);
+    }
+    mgItems=keep;
+    if(newMisses>0){
+      mgMisses+=newMisses;
+      const mm=document.getElementById('mg-miss');
+      if(mm)mm.textContent=mgMisses;
+      if(mgMisses>=5){endMinigame();return;}
+    }
+    mgRaf=requestAnimationFrame(loop);
+  }
+  mgRaf=requestAnimationFrame(loop);
+}
+function catchCheese(e){
+  if(!mgActive)return;
+  if(e.target.textContent!=='🧀')return;
+  const item=mgItems.find(it=>it.el===e.target);
+  if(!item||item.caught||item.missed)return;
+  item.caught=true;
+  e.target.textContent='✨';
+  mgScore+=3;
+  const m=document.getElementById('mg-score');if(m)m.textContent=mgScore;
+  setTimeout(()=>{try{e.target.remove();}catch(err){}},300);
+}
+function endMinigame(){
+  if(!mgActive)return; // guard against double calls
+  mgActive=false;
+  if(mgRaf){cancelAnimationFrame(mgRaf);mgRaf=null;}
+  mgItems=[];
+  S.coins+=mgScore;updateBars();saveState();
+  const area=document.getElementById('mg-area');
+  if(!area)return;
+  area.innerHTML=`<div class="mg-title">Game Over! 🎀</div><div class="mg-desc">You earned <strong>🪙 ${mgScore} coins</strong>!</div><div style="font-size:28px;margin:8px 0">🧀</div><button class="mg-btn" onclick="startMinigame()">Play Again ✨</button><button class="mg-btn" style="background:white;color:var(--pink-dark);border:1.5px solid var(--pink);margin-top:6px;" onclick="resetMg()">Back</button>`;
+  showNotif(`earned 🪙 ${mgScore} coins! 💕`);
+}
+function resetMg(){
+  mgActive=false;
+  if(mgRaf){cancelAnimationFrame(mgRaf);mgRaf=null;}
+  mgItems=[];
+  document.getElementById('mg-area').innerHTML=`<div class="mg-title">Cheese Catch! 🧀</div><div class="mg-desc">Tap the falling cheese to earn 🪙 coins!</div><div style="font-size:12px;color:var(--text-light);">3 coins per catch • 5 misses ends game</div><button class="mg-btn" onclick="startMinigame()">Play Now ✨</button>`;
+}
 window.addEventListener('beforeunload',saveState);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveState();});
 if(S.sleeping){const b=document.getElementById('btn-sleep');b.querySelector('.ci').textContent='☀️';b.querySelector('.cl').textContent='Wake Up';setAnim('sleeping');}else{setAnim('bouncing');setTimeout(()=>setAnim('idle'),2000);}
