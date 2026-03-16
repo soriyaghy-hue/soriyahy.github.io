@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>soriyahy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink-light: #fdf0f4;
+      --pink-mid: #f4c0d1;
+      --pink-soft: #ed93b1;
+      --pink-main: #d4537e;
+      --pink-deep: #993556;
+      --cream: #fdf7f9;
+      --text-dark: #3a1a26;
+      --text-mid: #72243e;
+      --text-muted: #b07090;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ---- decorative bg blobs ---- */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px; right: -120px;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #f4c0d133 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px; left: -100px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ed93b122 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ---- header ---- */
+    header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 72px 24px 40px;
+    }
+
+    .bow {
+      display: inline-block;
+      font-size: 28px;
+      margin-bottom: 12px;
+      animation: sway 3s ease-in-out infinite;
+    }
+    @keyframes sway {
+      0%, 100% { transform: rotate(-6deg); }
+      50%       { transform: rotate(6deg); }
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 400;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: var(--pink-main);
+    }
+
+    .tagline {
+      margin-top: 16px;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: lowercase;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin: 32px auto;
+      max-width: 240px;
+    }
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--pink-mid);
+    }
+    .divider-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--pink-soft);
+    }
+
+    /* ---- gallery ---- */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .section-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--text-mid);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--pink-mid);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 36px #d4537e22;
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--pink-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border-bottom: 1px solid var(--pink-mid);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ffffff44 0%, transparent 60%);
+    }
+
+    .card-body {
+      padding: 16px 18px 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: lowercase;
+      background: var(--pink-light);
+      color: var(--pink-deep);
+      border: 1px solid var(--pink-mid);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+
+    /* placeholder card */
+    .card-placeholder .card-thumb {
+      background: repeating-linear-gradient(
+        -45deg,
+        #fdf0f4,
+        #fdf0f4 6px,
+        #f9e0ea 6px,
+        #f9e0ea 12px
+      );
+    }
+    .card-placeholder .card-title {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ---- footer ---- */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--pink-mid);
+    }
+
+    footer span { color: var(--pink-main); }
+
+    /* ---- entrance animation ---- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header        { animation: fadeUp 0.7s ease both; }
+    .section-label{ animation: fadeUp 0.7s ease 0.2s both; }
+    .card:nth-child(1) { animation: fadeUp 0.6s ease 0.3s both; }
+    .card:nth-child(2) { animation: fadeUp 0.6s ease 0.4s both; }
+    .card:nth-child(3) { animation: fadeUp 0.6s ease 0.5s both; }
+    .card:nth-child(4) { animation: fadeUp 0.6s ease 0.6s both; }
+    .card:nth-child(5) { animation: fadeUp 0.6s ease 0.7s both; }
+    .card:nth-child(6) { animation: fadeUp 0.6s ease 0.8s both; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="bow">🎀</div>
+    <h1>soriya<em>hy</em></h1>
+    <p class="tagline">a little gallery of ai-made things ˊˎ-</p>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-dot"></div>
+      <div class="divider-line"></div>
+    </div>
+  </header>
+
+  <main>
+    <p class="section-label">things i've made ✦</p>
+
+    <div class="gallery">
+
+      <!-- Real project card -->
+      <a class="card" href="https://soriyaghy-hue.github.io/Ratty-rendezvous/" target="_blank">
+        <div class="card-thumb">🐀</div>
+        <div class="card-body">
+          <div class="card-title">Ratty Rendezvous</div>
+          <div class="card-desc">a coquette rat-catching clicker game with bows, jellycat drops & a boutique shop</div>
+          <span class="card-tag">game</span>
+        </div>
+      </a>
+
+      <!-- Quiz card -->
+      <a class="card" href="https://soriyahy.com/coquette-quiz.html" target="_blank">
+        <div class="card-thumb">✨</div>
+        <div class="card-body">
+          <div class="card-title">Personality Quizzes</div>
+          <div class="card-desc">a collection of cute personality quizzes to find out who you really are</div>
+          <span class="card-tag">quiz</span>
+        </div>
+      </a>
+
+      <!-- Placeholder cards -->
+      <div class="card card-placeholder">
+        <div class="card-thumb">✦</div>
+        <div class="card-body">
+          <div class="card-title">coming soon...</div>
+          <div class="card-desc">the next creation is on its way</div>
+          <span class="card-tag">???</span>
+        </div>
+      </div>
+
+      <div class="card card-placeholder">
+        <div class="card-thumb">✦</div>
+        <div class="card-body">
+          <div class="card-title">coming soon...</div>
+          <div class="card-desc">something pink, probably</div>
+          <span class="card-tag">???</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    made with <span>♡</span> by soriyahy
+  </footer>
+
+</body>
+</html>
